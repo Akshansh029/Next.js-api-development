@@ -107,8 +107,14 @@ export const GET = async (req: Request) => {
 
     // Sorting based on asc and desc
     const blogs = desc
-      ? await Blog.find(filter).sort({ createdAt: "desc" })
-      : await Blog.find(filter).sort({ createdAt: "asc" });
+      ? await Blog.find(filter)
+          .sort({ createdAt: "desc" })
+          .skip(skip)
+          .limit(limit)
+      : await Blog.find(filter)
+          .sort({ createdAt: "asc" })
+          .skip(skip)
+          .limit(limit);
 
     return new NextResponse(JSON.stringify(blogs), { status: 200 });
   } catch (error: any) {
