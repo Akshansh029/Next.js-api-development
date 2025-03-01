@@ -20,7 +20,7 @@ export const GET = async (req: Request) => {
     const endDate = searchParams.get("endDate");
 
     // Sorting blogs based on createAt
-    const asc = searchParams.has("asc");
+    // const asc = searchParams.has("asc");
     const desc = searchParams.has("desc");
 
     // Pagination

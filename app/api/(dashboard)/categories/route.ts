@@ -4,8 +4,6 @@ import Category from "@/lib/models/category";
 import { NextResponse } from "next/server";
 import { Types } from "mongoose";
 
-const ObjectId = require("mongoose").Types.ObjectId;
-
 // Fetch all categories for a given user from the database and return them as JSON.
 export const GET = async (req: Request) => {
   try {

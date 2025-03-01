@@ -4,7 +4,6 @@ import Categroies from "@/lib/models/category";
 import { NextResponse } from "next/server";
 import { Types } from "mongoose";
 import Category from "@/lib/models/category";
-const ObjectId = require("mongoose").Types.ObjectId;
 
 // Update a category for a given user in the database.
 export const PATCH = async (req: Request, context: { params: any }) => {

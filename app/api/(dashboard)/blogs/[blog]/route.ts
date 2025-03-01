@@ -131,11 +131,7 @@ export const PATCH = async (req: Request, context: { params: any }) => {
       });
     }
 
-    const updatedBlog = await Blog.findByIdAndUpdate(
-      blogId,
-      { title, description },
-      { new: true }
-    );
+    await Blog.findByIdAndUpdate(blogId, { title, description }, { new: true });
 
     return new NextResponse(
       JSON.stringify({ message: "Blog is updated successfully" }),
