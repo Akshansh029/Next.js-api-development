@@ -6,13 +6,26 @@ import { Types } from "mongoose";
 import Blog from "@/lib/models/blog";
 import Category from "@/lib/models/category";
 
-const ObjectId = require("mongoose").Types.ObjectId;
-
 export const GET = async (req: Request) => {
   try {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
     const categoryId = searchParams.get("categoryId");
+
+    // Search functionality (To find keywords in the title of the blogs)
+    const searchkeywords = searchParams.get("keywords") as string;
+
+    // Filtering based on start and end date
+    const startDate = searchParams.get("startDate");
+    const endDate = searchParams.get("endDate");
+
+    // Sorting blogs based on createAt
+    const asc = searchParams.has("asc");
+    const desc = searchParams.has("desc");
+
+    // Pagination
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "10");
 
     if (!userId || !Types.ObjectId.isValid(userId)) {
       return new NextResponse(
@@ -62,13 +75,49 @@ export const GET = async (req: Request) => {
       category: new Types.ObjectId(categoryId),
     };
 
-    const blogs = await Blog.find(filter);
+    // If searchKeywords is present search for them in Blogs
+    if (searchkeywords) {
+      filter.$or = [
+        {
+          title: { $regex: searchkeywords, $options: "i" },
+        },
+        {
+          description: { $regex: searchkeywords, $options: "i" },
+        },
+      ];
+    }
+
+    // Based on start and end date
+    if (startDate && endDate) {
+      filter.createdAt = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate),
+      };
+    } else if (startDate) {
+      filter.createdAt = {
+        $gte: new Date(startDate),
+      };
+    } else if (endDate) {
+      filter.createdAt = {
+        $lte: new Date(endDate),
+      };
+    }
+
+    const skip = (page - 1) * limit;
+
+    // Sorting based on asc and desc
+    const blogs = desc
+      ? await Blog.find(filter).sort({ createdAt: "desc" })
+      : await Blog.find(filter).sort({ createdAt: "asc" });
 
     return new NextResponse(JSON.stringify(blogs), { status: 200 });
-  } catch (error) {}
+  } catch (error: any) {
+    return new NextResponse(JSON.stringify({ error: error.message }), {
+      status: 500,
+    });
+  }
 };
 
-//
 export const POST = async (req: Request) => {
   try {
     const { searchParams } = new URL(req.url);
