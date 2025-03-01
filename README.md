@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js REST API Development
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This repository is a learning project for developing REST APIs using Next.js and TypeScript. It covers API routing, database integration, CRUD operations, authentication, and deployment.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Project Setup
+
+1. Create a New Next.js Project
+
+To set up a Next.js project with TypeScript:
+
+```shell
+npx create-next-app@latest my-api-project --typescript
+cd my-api-project
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Project Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+.next/
+app/
+ ├── api/
+ │   ├── auth/
+ │   │   ├── users/
+ │   │   │   ├── route.ts
+ │   ├── dashboard/
+ │   │   ├── blogs/
+ │   │   ├── categories/
+ ├── favicon.ico
+ ├── globals.css
+ ├── layout.tsx
+ ├── page.tsx
+lib/
+ ├── models/
+ ├── db.ts
+middlewares/
+public/
+.env
+.gitignore
+eslint.config.mjs
+middleware.ts
+next-env.d.ts
+next.config.ts
+package.json
+package-lock.json
+postcss.config.mjs
+README.md
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Database Integration
 
-## Learn More
+- **Database**: MongoDB using Mongoose
+- **Configuration File**: lib/db.ts
 
-To learn more about Next.js, take a look at the following resources:
+Create a `.env` file and add your MongoDB connection string:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```env
+MONGO_URI=mongodb+srv://your_database_url
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## User APIs
 
-## Deploy on Vercel
+| Method | Endpoint       | Description         |
+| ------ | -------------- | ------------------- |
+| GET    | /api/users     | Fetch all users     |
+| POST   | /api/users     | Create a new user   |
+| PATCH  | /api/users/:id | Update user details |
+| DELETE | /api/users/:id | Remove a user       |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Create a category
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Method | Endpoint                      | Description        |
+| ------ | ----------------------------- | ------------------ |
+| GET    | /api/dashboard/categories     | Get all categories |
+| POST   | /api/dashboard/categories     | Create a category  |
+| PATCH  | /api/dashboard/categories/:id | Update category    |
+| DELETE | /api/dashboard/categories/:id | Remove a category  |
+
+## Blog APIs
+
+| Method | Endpoint                 | Description         |
+| ------ | ------------------------ | ------------------- |
+| GET    | /api/dashboard/blogs     | Fetch all blogs     |
+| POST   | /api/dashboard/blogs     | Create a new blog   |
+| GET    | /api/dashboard/blogs/:id | Fetch a single blog |
+| PATCH  | /api/dashboard/blogs/:id | Update a blog       |
+| DELETE | /api/dashboard/blogs/:id | Remove a blog       |
+
+### Additional Features
+
+- **Search Blogs by Keywords**: `/api/dashboard/blogs?search=query`
+
+- **Filter Blogs by Date**: `/api/dashboard/blogs?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD`
+
+- **Sort Blogs**: `/api/dashboard/blogs?sort=asc|desc`
+
+- **Pagination**: `/api/dashboard/blogs?page=1&limit=10`
+
+## Middleware and Security
+
+- **API Route Protection**: Ensures only authenticated users can access certain routes.
+
+- **Logging Middleware**: Logs API requests for monitoring and debugging.
+
+## Deployment
+
+To deploy the project on Vercel:
+
+1. Create a Vercel account if you don't have one.
+2. Import your project to Vercel from GitHub or your local machine.
+3. Configure environment variables for your MongoDB connection string and other sensitive information.
+4. Deploy your project.
