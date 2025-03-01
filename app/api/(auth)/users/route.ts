@@ -3,8 +3,6 @@ import User from "@/lib/models/user";
 import { NextResponse } from "next/server";
 import { Types } from "mongoose";
 
-const ObjectId = require("mongoose").Types.ObjectId;
-
 // Fetch all users from the database and return them as JSON.
 export const GET = async () => {
   try {
@@ -57,9 +55,9 @@ export const PATCH = async (req: Request) => {
     }
 
     const updatedUser = await User.findByIdAndUpdate(
-      { _id: new ObjectId(userId) },
+      { _id: userId },
       { username: newUsername },
-      { new: true } // Return the updated document
+      { new: true }
     );
 
     // If the user does not exist, return a 404 error message.
@@ -120,5 +118,12 @@ export const DELETE = async (req: Request) => {
     return new NextResponse(
       JSON.stringify({ message: "User is deleted", user: deletedUser })
     );
-  } catch (error) {}
+  } catch (error: any) {
+    return new NextResponse(
+      JSON.stringify({ message: "Error in deleting user " + error.message }),
+      {
+        status: 500,
+      }
+    );
+  }
 };
